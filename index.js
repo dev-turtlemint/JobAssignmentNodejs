@@ -22,12 +22,14 @@ const serviceAccountAuth = new JWT({
     ],
 });
 
+
+
 const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
 
 
 
 (async function() {
-    await serviceAccountAuth;
+    await serviceAccountAuth.authorize();
     await doc.loadInfo(); // loads document properties and worksheets
     await doc.updateProperties({ title: 'Assignment' });
 
@@ -52,7 +54,7 @@ app.post("/api/add", async (req, res) => {
     const bill = req.body.data.bill;
     // console.log(next_visit, 'working')
 
-    await serviceAccountAuth;
+    await serviceAccountAuth.authorize();
 
     const sheet = doc.sheetsByIndex[0]; // or use `doc.sheetsById[id]` or `doc.sheetsByTitle[title]`
 
@@ -111,7 +113,7 @@ app.get("/api/search", async (req, res) => {
   try {
     const searchtext = req.headers.searchtext;
     // console.log(req.headers.searchtext)
-    await serviceAccountAuth;
+    await serviceAccountAuth.authorize();
 
     const sheet = doc.sheetsByIndex[0];
 
@@ -161,7 +163,7 @@ app.post("/api/update", async (req, res) => {
     //     user.password
     //   );
     const searchText = req.headers["searchText"];
-    await serviceAccountAuth;
+    await serviceAccountAuth.authorize();
 
     const sheet = doc.sheetsByIndex[0];
     
@@ -181,7 +183,7 @@ app.post("/api/update", async (req, res) => {
     }
   });
 
-app.listen(1337, () => {
+app.listen(PORT, () => {
   console.log("Server has started on 1337");
 });
 
